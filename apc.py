@@ -280,9 +280,9 @@ class APC:
         args.extend([
             '-t', f'{timeout or self.fetch_timeout}', # Get timeout
             '-r', '0', # No retries
-            ip, # UPS NMC IP
             '-m', './powernet.mib', # Use the Powernet MIB
-            '-Oqs' # Output format: OID, type, value,
+            '-Oqs', # Output format: OID, type, value,
+            ip # UPS NMC IP
         ])
         snmp_data = {}
 
@@ -298,6 +298,7 @@ class APC:
             stdout, stderr = await proc.communicate()
             # Check for errors
             if proc.returncode != 0:
+                log.error(f'snmpbulkget exited with code {proc.returncode} for UPS {ip}')
                 return {}
 
             # SNMP data
