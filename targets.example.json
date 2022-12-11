@@ -1,0 +1,73 @@
+[
+    {
+        "name": "server-ups",
+        "ip": "192.168.0.2",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "fetch_probes": "http",
+        "http_username": "scraper",
+        "http_password": "password"
+    },
+    {
+        "name": "garage-ups",
+        "sku": "SU700NET",
+        "ip": "192.168.0.3",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "rated_va": 700,
+        "rated_watts": 450,
+        "fetch_probes": "off"
+    },
+    {
+        "name": "desktop-ups",
+        "ip": "192.168.0.4",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "fetch_probes": "off"
+    },
+    {
+        "name": "office-ups",
+        "sku": "SUA1500",
+        "ip": "192.168.0.5",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "rated_va": 1440,
+        "rated_watts": 980,
+        "fetch_probes": "off"
+    },
+    {
+        "name": "network-ups",
+        "sku": "SUA2200RMXL3U",
+        "ip": "192.168.0.6",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "rated_va": 2200,
+        "rated_watts": 1850,
+        "fetch_probes": "https",
+        "http_username": "scraper",
+        "http_password": "password",
+        "http_port": 443
+    },
+    {
+        "name": "livingroom-ups",
+        "sku": "SUA2200XL",
+        "ip": "192.168.0.7",
+        "snmp_version": "v2c",
+        "snmp_community": "public",
+        "snmp_port": 161,
+        "interval": 5,
+        "rated_va": 2200,
+        "rated_watts": 1850,
+        "fetch_probes": "snmp"
+    }
+]
