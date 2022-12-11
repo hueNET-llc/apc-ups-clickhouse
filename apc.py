@@ -38,7 +38,7 @@ class APC:
         self.ups_targets = []
 
         # Queue of data waiting to be inserted into ClickHouse
-        self.data_queue = asyncio.Queue(maxsize=self.data_queue_limit)
+        self.clickhouse_queue = asyncio.Queue(maxsize=self.clickhouse_queue_limit)
 
         # Event used to stop the loop
         self.stop_event = asyncio.Event()
@@ -184,9 +184,9 @@ class APC:
         """
         # Max number of inserts waiting to be inserted at once
         try:
-            self.data_queue_limit = int(os.environ.get('DATA_QUEUE_LIMIT', 50))
+            self.clickhouse_queue_limit = int(os.environ.get('CLICKHOUSE_QUEUE_LIMIT', 50))
         except ValueError:
-            log.exception('Invalid DATA_QUEUE_LIMIT passed, must be a number')
+            log.exception('Invalid CLICKHOUSE_QUEUE_LIMIT passed, must be a number')
             exit(1)
 
         # Default global SNMP fetch interval
@@ -208,7 +208,7 @@ class APC:
         try:
             self.log_level = int(os.environ.get('LOG_LEVEL', 20))
         except ValueError:
-            log.exception('Invalid DATA_QUEUE_LIMIT passed, must be a number')
+            log.exception('Invalid LOG_LEVEL passed, must be a number')
             exit(1)
 
         # Set the logging level
@@ -231,7 +231,7 @@ class APC:
         """
         while True:
             # Get and check data from the queue
-            if not (data := await self.data_queue.get()):
+            if not (data := await self.clickhouse_queue.get()):
                 continue
 
             # Keep trying until the insert succeeds
@@ -642,10 +642,9 @@ class APC:
                     timestamp
                 ))
 
-                self.data_queue.put_nowait(data)
+                self.clickhouse_queue.put_nowait(data)
             except Exception:
                 log.exception(f'Failed to fetch UPS target "{ups["name"]}" at IP "{ups["ip"]}"')
-                continue
             finally:
                 # Wait the configured interval before fetching again
                 await asyncio.sleep(ups['interval'] or self.fetch_interval)
