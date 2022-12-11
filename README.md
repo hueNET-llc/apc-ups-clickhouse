@@ -9,7 +9,7 @@ Configuration is done via environment variables and targets.json
 DATA_QUEUE_LIMIT    -   ClickHouse insert queue max size (default: "50")
 FETCH_INTERVAL      -   Default fetch interval in seconds (default: "30")
 FETCH_TIMEOUT       -   Default fetch timeout in seconds (default: "15")
-LOG_LEVEL           -   Logging verbosity (default: "20"), levels: 0 (debug) / 10 (info) / 20 (warning) / 30 (error) / 40 (critical)
+LOG_LEVEL           -   Logging verbosity (default: "20"), levels: 10 (debug) / 20 (info) / 30 (warning) / 40 (error) / 50 (critical)
 
 === ClickHouse ===
 CLICKHOUSE_URL      -   ClickHouse URL (i.e. "http://192.168.0.69:8123")

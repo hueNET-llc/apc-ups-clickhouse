@@ -616,7 +616,7 @@ class APC:
                     # Check if we were able to scrape the page
                     if html:
                         probes = self.probe_html_regex.findall(html)
-                        log.info(f'Got HTML probes {probes}')
+                        log.debug(f'Got HTML probes for {ups["ip"]} {probes}')
 
                         for probe in probes:
                             sensor_name.append(f'{probe[0]} Temperature')
