@@ -29,7 +29,7 @@ class APC:
 
         # Probe HTML regex
         self.probe_html_regex = re.compile(
-            r'<tr class=\"shade\">\r\n<td class=\"dataName\" noWrap=\"noWrap\"><a href=\"uiocfg\.htm\?sensor=[\d]+\" alt=\"(?:.*)\" title=\"(?:.*)\">(.*)</a></td>\r\n(?:.*)\r\n<td>(.*)&deg;&nbsp;(C|F)</td>\r\n(?:<td>([\d]{0,2})%&nbsp;RH</td>\r\n)?(?:</tr>|</table>)'
+            r'<tr class=\"shade\">\r\n<td class=\"dataName\" noWrap=\"noWrap\"><a href=\"uiocfg\.htm\?sensor=[\d]+\" alt=\"(?:.*)\" title=\"(?:.*)\">(.*)</a></td>\r\n(?:.*)\r\n<td>(.*)&deg;&nbsp;(C|F)</td>\r\n<td>(?:([\d]{0,2})%&nbsp;RH|Not Available)</td>\r\n(?:</tr>|</table>)'
         )
 
         # Get the event loop
@@ -240,8 +240,6 @@ class APC:
                     # Insert the data into ClickHouse
                     log.debug(f'Got data to insert: {data}')
                     await self.clickhouse.execute(
-                        # ['rack-ups.nj02.huenet.net', 'Smart-UPS X 2200', 'SMX2200RMLV2U', 'low', 'onLine', 'smallMomentarySpike', False, 'batteryNormal', '130', '143', '130', '143', 100.0, 132.4, 118.6, 60.0, 118.6, 60.0, 6.7, 1.1, 0.0, 3.6, datetime.date(2017, 1, 31), datetime.date(2022, 11, 15), datetime.date(2027, 5, 16), 11857, 0, ['Battery Temperature', 'Port 1 Temp 1 Temperature', 'Port 1 Temp 1 Humidity'], [20.1, 19.0, 40.0], 1670104183.348131]
-
                         f"""
                         INSERT INTO {self.clickhouse_table} (
                             name, model, sku, sensitivity, status, last_transfer_reason, battery_needs_replacement,
@@ -259,7 +257,6 @@ class APC:
                     break
                 except Exception as e:
                     # Insertion failed
-                    log.exception('rip')
                     log.error(f'Insert failed for timestamp {data[-1]}: "{e}"')
                     # Wait before retrying so we don't spam retries
                     await asyncio.sleep(2)
@@ -373,7 +370,7 @@ class APC:
 
                 # Get the current UTC timestamp
                 timestamp = datetime.datetime.now(tz=datetime.timezone.utc).timestamp()
-                log.debug(f'got snmp_data {snmp_data}')
+                log.debug(f'Got snmp_data {snmp_data}')
 
                 data = [
                     ups['name'], # Target/UPS name
