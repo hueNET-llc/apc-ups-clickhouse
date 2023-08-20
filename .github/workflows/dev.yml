@@ -1,12 +1,12 @@
-name: master - Build and push to Docker Hub
+name: dev - Build only
 
 on:
   workflow_dispatch:
     branches:
-      - 'master'
+      - 'dev'
   push:
     branches:
-      - 'master'
+      - 'dev'
 
 jobs:
   build:
@@ -28,4 +28,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/apc-ups-clickhouse:latest
+          tags: ${{ secrets.DOCKER_USER }}/apc-ups-clickhouse:dev
