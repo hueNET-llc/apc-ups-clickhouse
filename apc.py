@@ -576,15 +576,17 @@ class APC:
                         elif probe.startswith('uioSensorStatusHumidity'):
                             sensor_name.append(f'{probes[probe_id]} Humidity')
                             sensor_value.append(float(value))
+
+                # Fetch probe data via scraping uiostatus.htm
+                # We get more precise data this way (0.5C increments)
                 elif ups['fetch_probes'] in ('http', 'https'):
                     html = None
                     # Check if there's no NMC session
                     if ups['nmc_session'] is None:
                         # Try to generate a new NMC session
                         ups['nmc_session'] = await self.generate_nmc_session(ups)
-
-                    # Check if there's an NMC session
-                    if ups['nmc_session'] is not None:
+                    else:
+                        # We already have an NMC session
                         async with self.session.get(
                             f'{ups["fetch_probes"]}://{ups["ip"]}:{ups["http_port"]}/NMC/{ups["nmc_session"]}/uiostatus.htm',
                             timeout=ups['timeout']

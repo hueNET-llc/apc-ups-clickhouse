@@ -1,9 +1,11 @@
-FROM python:3.11-alpine3.17
+FROM alpine:3.18
 
 COPY . /apc
 
 WORKDIR /apc
 
-RUN pip install -r requirements.txt && apk update && apk add --no-cache net-snmp-tools
+RUN apk update && \
+    apk add --no-cache python3 py3-pip net-snmp-tools && \
+    pip install --no-cache-dir -r requirements.txt
 
 ENTRYPOINT ["python", "-u", "apc.py"]
