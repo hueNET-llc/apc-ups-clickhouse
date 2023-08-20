@@ -29,7 +29,7 @@ class APC:
 
         # Probe HTML regex
         self.probe_html_regex = re.compile(
-            r'<tr class=\"shade\">\r\n<td class=\"dataName\" noWrap=\"noWrap\"><a href=\"uiocfg\.htm\?sensor=[\d]+\" alt=\"(?:.*)\" title=\"(?:.*)\">(.*)</a></td>\r\n(?:.*)\r\n<td>(.*)&deg;&nbsp;(C|F)</td>\r\n<td>(?:([\d]{0,2})%&nbsp;RH|Not Available)</td>\r\n(?:</tr>|</table>)'
+            r'<a href=\"uiocfg\.htm\?sensor=[\d]{1}\" alt=\"Edit\" title=\"Edit\">([^<]*)</a></td>\r\n<td><span class=\"se-icon-f4-selection text-success\"></span>&nbsp;Normal</td>\r\n<td>([^&]*)&deg;&nbsp;(F|C)</td>\r\n<td>(?:([\d]{1,2})%&nbsp;RH|Not Available)</td>\r\n</tr>\r\n(?=<tr>|</table>\n</div>\n</div>\n<div class=\"dataSection\">\n<div class=\"dataSubHeader\">\n<span id=\"langInputContacts\">)'
         )
 
         # Get the event loop
@@ -627,7 +627,7 @@ class APC:
                             else:
                                 sensor_value.append(float(probe[1]))
                             # Check if the probe has humidity data
-                            if probe[3]:
+                            if probe[3] != '':
                                 sensor_name.append(f'{probe[0]} Humidity')
                                 sensor_value.append(float(probe[3]))
 
