@@ -31,6 +31,10 @@ class APC:
         self.probe_html_regex = re.compile(
             r'<a href=\"uiocfg\.htm\?sensor=[\d]{1}\" alt=\"Edit\" title=\"Edit\">([^<]*)</a></td>\r\n<td><span class=\"se-icon-f4-selection text-success\"></span>&nbsp;Normal</td>\r\n<td>([^&]*)&deg;&nbsp;(F|C)</td>\r\n<td>(?:([\d]{1,2})%&nbsp;RH|Not Available)</td>\r\n</tr>\r\n(?=<tr>|</table>\n</div>\n</div>\n<div class=\"dataSection\">\n<div class=\"dataSubHeader\">\n<span id=\"langInputContacts\">)'
         )
+        # Regex to check if it's the NMC login page
+        self.probe_html_login_regex = re.compile(
+            r'<span class="h3 text-primary">\nLogin<\/span>'
+        )
 
         # Get the event loop
         self.loop = loop
@@ -596,10 +600,10 @@ class APC:
                             else:
                                 html = await resp.text()
 
-                    # Check if there's no HTML
+                    # Check if there's no HTML or if we got redirected to the login page
                     # Assume the previous fetch failed (invalid NMC session?)
                     # Try to regenerate the NMC session and scrape again
-                    if html is None and (session := await self.generate_nmc_session(ups)) is not None:
+                    if (html is None or self.probe_html_login_regex.search(html)) and (session := await self.generate_nmc_session(ups)) is not None:
                         # Update the NMC session
                         ups['nmc_session'] = session
                         # Try to fetch again
